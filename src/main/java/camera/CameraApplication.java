@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 public class CameraApplication extends Application
 {
-    private final Configuration configuration = new PropertiesConfiguration("camera.properties");
+    private final Configuration configuration = new JsonConfiguration("camera.json");
 
     public static void main(String[] args) {
         Application.launch(args);

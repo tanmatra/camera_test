@@ -2,3 +2,4 @@
 /target/
 *.iml
 camera.properties
+camera.json
