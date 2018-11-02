@@ -46,6 +46,7 @@ public class CameraApplication extends Application
 
         stage.setTitle("Camera test");
         stage.setScene(scene);
+        stage.setOnCloseRequest(windowEvent -> quit());
         stage.show();
     }
 
@@ -60,7 +61,7 @@ public class CameraApplication extends Application
 
     private MenuBar createMenuBar() {
         final MenuItem exitMenuItem = new MenuItem("E_xit");
-        exitMenuItem.setOnAction(event -> Platform.exit());
+        exitMenuItem.setOnAction(event -> quit());
 
         final Menu fileMenu = new Menu("_File");
         fileMenu.getItems().addAll(exitMenuItem);
@@ -69,5 +70,10 @@ public class CameraApplication extends Application
         menuBar.setUseSystemMenuBar(true);
 
         return menuBar;
+    }
+
+    private void quit() {
+        Platform.exit();
+        System.exit(0);
     }
 }
