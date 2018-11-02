@@ -1,5 +1,6 @@
 package camera;
 
+import java.util.List;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -19,11 +20,22 @@ public class CameraApplication extends Application
 
     private static final boolean vlcPlayerDetected = new NativeDiscovery().discover();
 
+    private boolean useVlcPlayer = false;
+
     public static void main(String[] args) {
         if (vlcPlayerDetected) {
             System.out.println("VLC Player detected");
         }
         Application.launch(args);
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        final List<String> rawParameters = getParameters().getRaw();
+        final boolean forceVLC = rawParameters.contains("-vlc");
+        final boolean forceJavaFx = rawParameters.contains("-javafx");
+        useVlcPlayer = forceVLC || (vlcPlayerDetected && !forceJavaFx);
     }
 
     @Override
@@ -51,7 +63,7 @@ public class CameraApplication extends Application
     }
 
     private CameraView createCameraView(int num) {
-        final Player player = vlcPlayerDetected ? new VlcPlayer() : new JavaFxPlayer();
+        final Player player = useVlcPlayer ? new VlcPlayer() : new JavaFxPlayer();
         final CameraView cameraView = new CameraView(player, num, configuration);
         cameraView.setPrefSize(500, 400);
         GridPane.setHgrow(cameraView, Priority.ALWAYS);
