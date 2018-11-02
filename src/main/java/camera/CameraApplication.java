@@ -9,13 +9,20 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 
 public class CameraApplication extends Application
 {
     private final Configuration configuration = new JsonConfiguration("camera.json");
 
+    private static final boolean vlcPlayerDetected = new NativeDiscovery().discover();
+
     public static void main(String[] args) {
+        if (vlcPlayerDetected) {
+            System.out.println("VLC Player detected");
+        }
         Application.launch(args);
     }
 
@@ -43,8 +50,11 @@ public class CameraApplication extends Application
     }
 
     private CameraView createCameraView(int num) {
-        final CameraView cameraView = new CameraView(num, configuration);
+        final Player player = vlcPlayerDetected ? new VlcPlayer() : new JavaFxPlayer();
+        final CameraView cameraView = new CameraView(player, num, configuration);
         cameraView.setPrefSize(500, 400);
+        GridPane.setHgrow(cameraView, Priority.ALWAYS);
+        GridPane.setVgrow(cameraView, Priority.ALWAYS);
         return cameraView;
     }
 
