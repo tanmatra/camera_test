@@ -3,17 +3,15 @@ package camera
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.util.Properties
 
 internal class PropertiesConfiguration(fileName: String) : Configuration
 {
     private val properties = Properties()
 
-    private val file: File
+    private val file = File(fileName)
 
     init {
-        file = File(fileName)
         load()
     }
 
@@ -21,18 +19,14 @@ internal class PropertiesConfiguration(fileName: String) : Configuration
         if (!file.exists()) {
             return
         }
-        try {
+        ignoreThrows {
             FileInputStream(file).use { inputStream -> properties.load(inputStream) }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
     }
 
     private fun save() {
-        try {
+        ignoreThrows {
             FileOutputStream(file).use { outputStream -> properties.store(outputStream, null) }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
     }
 

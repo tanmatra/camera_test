@@ -16,7 +16,7 @@ internal class JsonConfiguration(fileName: String) : Configuration
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
-    private var root: JsonObject? = null
+    private var root = JsonObject()
 
     init {
         load()
@@ -30,8 +30,7 @@ internal class JsonConfiguration(fileName: String) : Configuration
         root = try {
             FileInputStream(file).use { inputStream ->
                 InputStreamReader(inputStream).use { reader ->
-                    val parser = JsonParser()
-                    parser.parse(reader).asJsonObject
+                    JsonParser().parse(reader).asJsonObject
                 }
             }
         } catch (e: Exception) {
@@ -53,24 +52,23 @@ internal class JsonConfiguration(fileName: String) : Configuration
     }
 
     private fun getCameraObject(number: Int): JsonObject {
-        val key = "camera$number"
-        var `object`: JsonObject? = root!!.getAsJsonObject(key)
-        if (`object` == null) {
-            `object` = JsonObject()
-            root!!.add(key, `object`)
-        }
-        return `object`
+        return root.getOrCreateObject("camera$number")
     }
 
     override fun getCameraURI(number: Int): String? {
-        val cameraObject = getCameraObject(number)
-        val primitive = cameraObject.getAsJsonPrimitive("uri")
-        return primitive?.asString
+        return getCameraObject(number).getAsJsonPrimitive("uri")?.asString
     }
 
     override fun setCameraURI(number: Int, uri: String?) {
-        val cameraObject = getCameraObject(number)
-        cameraObject.addProperty("uri", uri)
+        getCameraObject(number).addProperty("uri", uri)
         save()
+    }
+}
+
+fun JsonObject.getOrCreateObject(key: String): JsonObject {
+    return getAsJsonObject(key) ?: run {
+        val newObject = JsonObject()
+        add(key, newObject)
+        newObject
     }
 }

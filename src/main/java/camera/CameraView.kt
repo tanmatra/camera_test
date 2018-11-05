@@ -52,10 +52,8 @@ internal class CameraView(
         content.bottom = createButtonsPane()
 
         configuration.getCameraURI(number)?.let { oldURI ->
-            try {
+            ignoreThrows {
                 encoder = oldURI
-            } catch (e: Exception) {
-                println(e.toString())
             }
         }
     }
@@ -95,14 +93,8 @@ internal class CameraView(
         val fileChooser = FileChooser()
         fileChooser.extensionFilters.addAll(PNG_FILES, JPG_FILES, ALL_FILES)
         val file = fileChooser.showSaveDialog(scene.window) ?: return
-        try {
+        tryWithAlert("Error saving screenshot") {
             makeScreenshot(file.toString())
-        } catch (e: Exception) {
-            Alert(Alert.AlertType.ERROR).run {
-                headerText = "Error saving screenshot"
-                contentText = e.toString()
-                showAndWait()
-            }
         }
     }
 
@@ -118,10 +110,8 @@ internal class CameraView(
         }
         val file = fileChooser.showOpenDialog(scene.window)
         if (file != null) {
-            try {
+            tryWithAlert("File open error") {
                 encoder = file.toURI().toString()
-            } catch (e: Exception) {
-                showAlert("File open error", e)
             }
         }
     }
@@ -135,10 +125,8 @@ internal class CameraView(
             isResizable = true
         }
         val result = dialog.showAndWait()
-        try {
+        tryWithAlert("URI open error") {
             result.ifPresent { encoder = it }
-        } catch (e: Exception) {
-            showAlert("URI open error", e)
         }
     }
 
@@ -169,6 +157,14 @@ internal class CameraView(
                 title = "Error"
                 this.headerText = headerText
                 showAndWait()
+            }
+        }
+
+        inline private fun tryWithAlert(headerText: String, code: () -> Unit) {
+            try {
+                code()
+            } catch (e: Exception) {
+                showAlert(headerText, e)
             }
         }
     }

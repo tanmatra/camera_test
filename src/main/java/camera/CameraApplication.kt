@@ -42,22 +42,25 @@ class CameraApplication : Application()
 
         val root = BorderPane(gridPane, menuBar, null, null, null)
 
-        val scene = Scene(root)
-        scene.stylesheets += javaClass.getResource("application.css").toExternalForm()
+        val scene = Scene(root).apply {
+            stylesheets += javaClass.getResource("application.css").toExternalForm()
+        }
 
-        stage.title = "Camera test"
-        stage.scene = scene
-        stage.setOnCloseRequest { quit() }
-        stage.show()
+        stage.run {
+            title = "Camera test"
+            this.scene = scene
+            setOnCloseRequest { quit() }
+            show()
+        }
     }
 
     private fun createCameraView(num: Int): CameraView {
         val player = if (useVlcPlayer) VlcPlayer() else JavaFxPlayer()
-        val cameraView = CameraView(player, num, configuration)
-        cameraView.setPrefSize(500.0, 400.0)
-        GridPane.setHgrow(cameraView, Priority.ALWAYS)
-        GridPane.setVgrow(cameraView, Priority.ALWAYS)
-        return cameraView
+        return CameraView(player, num, configuration).apply {
+            setPrefSize(500.0, 400.0)
+            gridHgrow = Priority.ALWAYS
+            gridVgrow = Priority.ALWAYS
+        }
     }
 
     private fun createMenuBar(): MenuBar {

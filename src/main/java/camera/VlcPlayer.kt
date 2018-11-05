@@ -8,19 +8,23 @@ import javafx.scene.canvas.Canvas
 import javafx.scene.image.Image
 import javafx.scene.image.PixelFormat
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent
+import uk.co.caprica.vlcj.player.direct.BufferFormatCallback
 import uk.co.caprica.vlcj.player.direct.DefaultDirectMediaPlayer
 import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat
 import java.io.File
 
 internal class VlcPlayer : Player()
 {
-    private val canvas = Canvas()
+    private val canvas = Canvas().apply {
+        width = 400.0
+        height = 300.0
+    }
 
     private val pixelWriter = canvas.graphicsContext2D.pixelWriter
 
     private val pixelFormat = PixelFormat.getByteBgraPreInstance()
 
-    private val bufferFormatCallback = { sourceWidth: Int, sourceHeight: Int ->
+    private val bufferFormatCallback = BufferFormatCallback { sourceWidth: Int, sourceHeight: Int ->
         val width = 400
         val height = width * sourceHeight / sourceWidth
         Platform.runLater {
@@ -32,7 +36,10 @@ internal class VlcPlayer : Player()
 
     private val playerComponent = DirectMediaPlayerComponent(bufferFormatCallback)
 
-    private val mediaPlayer = playerComponent.mediaPlayer
+    private val mediaPlayer = playerComponent.mediaPlayer.apply {
+        repeat = true
+        volume = 5
+    }
 
     private val animationTimer = object : AnimationTimer() {
         override fun handle(now: Long) {
@@ -40,24 +47,11 @@ internal class VlcPlayer : Player()
         }
     }
 
-    override val viewNode: Node
-        get() = canvas
+    override val viewNode: Node get() = canvas
 
-    override val fps: Int
-        get() = Math.round(mediaPlayer.fps)
+    override val fps: Int get() = Math.round(mediaPlayer.fps)
 
-    override val screenshot: Image
-        get() {
-            val bufferedImage = mediaPlayer.snapshot
-            return SwingFXUtils.toFXImage(bufferedImage, null)
-        }
-
-    init {
-        canvas.width = 400.0
-        canvas.height = 300.0
-        mediaPlayer.repeat = true
-        mediaPlayer.volume = 5
-    }
+    override val screenshot: Image get() = SwingFXUtils.toFXImage(mediaPlayer.snapshot, null)
 
     override fun play() {
         mediaPlayer.play()
@@ -71,8 +65,7 @@ internal class VlcPlayer : Player()
     }
 
     override fun setSource(uri: String?) {
-        val file = uriToFile(uri)
-        val media = file?.toString() ?: uri
+        val media = uriToFile(uri)?.toString() ?: uri
         mediaPlayer.playMedia(media)
         play()
     }
@@ -92,9 +85,7 @@ internal class VlcPlayer : Player()
                     val width = bufferFormat.width
                     val height = bufferFormat.height
                     if (width > 0 && height > 0) {
-                        pixelWriter.setPixels(
-                            0, 0, width, height, pixelFormat, byteBuffer,
-                            bufferFormat.pitches[0])
+                        pixelWriter.setPixels(0, 0, width, height, pixelFormat, byteBuffer, bufferFormat.pitches[0])
                     }
                 }
             }
