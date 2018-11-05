@@ -53,8 +53,8 @@ class JavaFxPlayer extends Player
     }
 
     @Override
-    int getFps() {
-        return 0;
+    float getFps() {
+        return 0.0f;
     }
 
     @Override

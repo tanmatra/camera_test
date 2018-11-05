@@ -2,12 +2,15 @@ package camera;
 
 import java.io.File;
 import java.util.Optional;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
@@ -15,7 +18,10 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 
 class CameraView extends TitledPane implements Camera
 {
@@ -77,6 +83,16 @@ class CameraView extends TitledPane implements Camera
         final Button screenshotButton = new Button("Screenshot");
         screenshotButton.setOnAction(event -> saveScreenshotToFile());
 
+        final Region fillerRegion = new Region();
+        HBox.setHgrow(fillerRegion, Priority.ALWAYS);
+
+        final Label fpsLabel = new Label("FPS:");
+        final KeyFrame keyFrame = new KeyFrame(Duration.seconds(1.0), actionEvent ->
+                fpsLabel.setText(String.format("FPS: %.1f", player.getFps())));
+        final Timeline timeline = new Timeline(keyFrame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+
         final HBox buttonsPanel = new HBox(
                 openURIButton,
                 openFileButton,
@@ -84,7 +100,9 @@ class CameraView extends TitledPane implements Camera
                 playButton,
                 stopButton,
                 new Separator(Orientation.VERTICAL),
-                screenshotButton);
+                screenshotButton,
+                fillerRegion,
+                fpsLabel);
         buttonsPanel.setAlignment(Pos.CENTER_LEFT);
         buttonsPanel.setPadding(new Insets(5.0));
         buttonsPanel.setSpacing(5.0);
@@ -183,7 +201,7 @@ class CameraView extends TitledPane implements Camera
     }
 
     @Override
-    public int getFps() {
+    public float getFps() {
         return player.getFps();
     }
 

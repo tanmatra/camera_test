@@ -23,7 +23,7 @@ public interface Camera
     String getEncoder();
 
     /** Get current FPS */
-    int getFps();
+    float getFps();
 
     /** Get the screenshot */
     Image getScreenshot();

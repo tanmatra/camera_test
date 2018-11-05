@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 
 abstract class Player
 {
-    abstract int getFps();
+    abstract float getFps();
 
     abstract void play();
 

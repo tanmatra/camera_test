@@ -83,8 +83,8 @@ class VlcPlayer extends Player
     }
 
     @Override
-    int getFps() {
-        return Math.round(mediaPlayer.getFps());
+    float getFps() {
+        return mediaPlayer.getFps();
     }
 
     @Override
