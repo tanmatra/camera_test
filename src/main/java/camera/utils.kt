@@ -2,7 +2,9 @@ package camera
 
 import javafx.scene.Node
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import javafx.scene.layout.VBox
 import java.io.File
 import java.net.URI
 import java.net.URISyntaxException
@@ -23,11 +25,19 @@ fun uriToFile(uriString: String?): File? {
     }
 }
 
-var Node.gridHgrow: Priority
+var Node.hboxGrow: Priority?
+    get() = HBox.getHgrow(this)
+    set(value) { HBox.setHgrow(this, value) }
+
+var Node.vboxGrow: Priority?
+    get() = VBox.getVgrow(this)
+    set(value) { VBox.setVgrow(this, value) }
+
+var Node.gridHgrow: Priority?
     get() = GridPane.getHgrow(this)
     set(value) { GridPane.setHgrow(this, value) }
 
-var Node.gridVgrow: Priority
+var Node.gridVgrow: Priority?
     get() = GridPane.getVgrow(this)
     set(value) { GridPane.setVgrow(this, value) }
 

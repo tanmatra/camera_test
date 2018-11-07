@@ -82,10 +82,10 @@ internal class CameraView(
         val screenshotButton = Button("Screenshot")
         screenshotButton.setOnAction { saveScreenshotToFile() }
 
-        val spacer = Region().apply { HBox.setHgrow(this, Priority.ALWAYS) }
+        val spacer = Region().apply { hboxGrow = Priority.ALWAYS }
 
         val fpsLabel = Label("FPS:").apply {
-            val keyFrame = KeyFrame(Duration.seconds(1.0), EventHandler<ActionEvent> { actionEven ->
+            val keyFrame = KeyFrame(Duration.seconds(1.0), EventHandler<ActionEvent> {
                 text = "FPS: %.1f".format(player.fps)
             })
             Timeline(keyFrame).run {
