@@ -43,7 +43,7 @@ class CameraApplication : Application()
         val root = BorderPane(gridPane, menuBar, null, null, null)
 
         val scene = Scene(root).apply {
-            stylesheets += javaClass.getResource("application.css").toExternalForm()
+            stylesheets += this@CameraApplication.javaClass.getResource("application.css").toExternalForm()
         }
 
         stage.run {
