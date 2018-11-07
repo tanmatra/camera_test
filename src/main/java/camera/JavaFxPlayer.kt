@@ -18,7 +18,7 @@ internal class JavaFxPlayer : Player()
 
     override val viewNode: Node get() = mediaView
 
-    override val fps: Int get() = 0
+    override val fps: Float get() = 0.0f
 
     override val screenshot: Image
         get() = mediaView.snapshot(null, null)

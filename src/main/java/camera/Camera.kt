@@ -11,7 +11,7 @@ interface Camera
     var encoder: String?
 
     /** Get current FPS */
-    val fps: Int
+    val fps: Float
 
     /** Get the screenshot */
     val screenshot: Image

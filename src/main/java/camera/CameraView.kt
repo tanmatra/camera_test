@@ -1,18 +1,26 @@
 package camera
 
+import javafx.animation.KeyFrame
+import javafx.animation.Timeline
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Alert
 import javafx.scene.control.Button
+import javafx.scene.control.Label
 import javafx.scene.control.Separator
 import javafx.scene.control.TextInputDialog
 import javafx.scene.control.TitledPane
 import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
+import javafx.scene.layout.Priority
+import javafx.scene.layout.Region
 import javafx.stage.FileChooser
+import javafx.util.Duration
 
 internal class CameraView(
     private val player: Player,
@@ -33,7 +41,7 @@ internal class CameraView(
             configuration.setCameraURI(camNum, uri)
         }
 
-    override val fps: Int get() = player.fps
+    override val fps: Float get() = player.fps
 
     override val screenshot: Image get() = player.screenshot
 
@@ -74,6 +82,18 @@ internal class CameraView(
         val screenshotButton = Button("Screenshot")
         screenshotButton.setOnAction { saveScreenshotToFile() }
 
+        val spacer = Region().apply { HBox.setHgrow(this, Priority.ALWAYS) }
+
+        val fpsLabel = Label("FPS:").apply {
+            val keyFrame = KeyFrame(Duration.seconds(1.0), EventHandler<ActionEvent> { actionEven ->
+                text = "FPS: %.1f".format(player.fps)
+            })
+            Timeline(keyFrame).run {
+                cycleCount = Timeline.INDEFINITE
+                play()
+            }
+        }
+
         return HBox(
             openURIButton,
             openFileButton,
@@ -81,7 +101,9 @@ internal class CameraView(
             playButton,
             stopButton,
             Separator(Orientation.VERTICAL),
-            screenshotButton
+            screenshotButton,
+            spacer,
+            fpsLabel
         ).apply {
             alignment = Pos.CENTER_LEFT
             padding = Insets(5.0)
@@ -160,7 +182,7 @@ internal class CameraView(
             }
         }
 
-        inline private fun tryWithAlert(headerText: String, code: () -> Unit) {
+        private inline fun tryWithAlert(headerText: String, code: () -> Unit) {
             try {
                 code()
             } catch (e: Exception) {

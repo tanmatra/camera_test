@@ -49,7 +49,7 @@ internal class VlcPlayer : Player()
 
     override val viewNode: Node get() = canvas
 
-    override val fps: Int get() = Math.round(mediaPlayer.fps)
+    override val fps: Float get() = mediaPlayer.fps
 
     override val screenshot: Image get() = SwingFXUtils.toFXImage(mediaPlayer.snapshot, null)
 

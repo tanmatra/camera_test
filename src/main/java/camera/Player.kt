@@ -5,7 +5,7 @@ import javafx.scene.image.Image
 
 internal abstract class Player
 {
-    internal abstract val fps: Int
+    internal abstract val fps: Float
 
     internal abstract val screenshot: Image
 
